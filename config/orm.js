@@ -1,6 +1,15 @@
 const connection = require("./connection");
 
 const orm = {
+  create: function(req,tableInput, cb) {
+    let queryString = `INSERT INTO ${tableInput} (burger_name, devoured) VALUES ('${req.body.burger_name}', false)`
+    connection.query(queryString, function(err, result) {
+      if (err) {
+        throw err;
+      }
+      cb(result)
+    }) 
+  },
   selectAll: function(tableInput, cb) {
     let queryString = `SELECT * FROM ${tableInput};`;
     connection.query(queryString, function(err, result) {
@@ -19,11 +28,11 @@ const orm = {
       cb(result)
     });
   },
-  updateOne: function(table, objColVals, condition, cb) {
+  updateOne: function(table, req, condition, cb) {
     let queryString = `Update ${table}`;
 
     queryString += " SET ";
-    queryString += objToSql(objColVals);
+    queryString +=  " devoured = " +req.body.devoured;
     queryString += " WHERE ";
     queryString += condition;
 
@@ -38,13 +47,4 @@ const orm = {
   }
 }
 
-
-
-
 module.exports = orm
-
-
-
-selectAll(tableInput, cb)
-selectOne(tableInput, cb)
-updateOne(table, objColVals, condition, cb)
